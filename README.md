@@ -358,7 +358,7 @@ A systematic audit is needed to:
 
 ## License
 
-MIT License. Use freely, modify freely, attribute if you're feeling generous.
+CC BY-NC-SA 4.0.
 
 ---
 
