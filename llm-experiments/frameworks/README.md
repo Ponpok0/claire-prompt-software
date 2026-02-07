@@ -6,6 +6,7 @@ Reusable evaluation frameworks across experiments.
 
 | Name | Current Version | Purpose |
 |------|-----------------|---------|
+| [CLEAR](./CLEAR) | v1 | Conversational Lucidity Evaluation and Assessment Rubric. Compares Claire-configured Claude against vanilla LLMs across 12 dialogue quality axes (reception, contribution, dialogue structure, integrity). |
 
 ## Structure
 
