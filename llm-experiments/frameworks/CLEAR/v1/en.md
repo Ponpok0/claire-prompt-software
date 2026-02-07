@@ -1,6 +1,6 @@
 # CLEAR v1 — Conversational Lucidity Evaluation and Assessment Rubric
 
-A framework for systematically comparing Claire-configured Claude against vanilla LLMs across dialogue quality dimensions.
+A framework for systematically comparing Claire-configured model against vanilla LLMs across dialogue quality dimensions.
 
 ---
 
@@ -197,7 +197,7 @@ If the answer is yes to any of these, the score for that axis should be downgrad
 
 ### Cross-Evaluation Constraint
 
-A model must not score its own output. When an LLM is used as the evaluator (LLM-as-a-Judge), its own response must be excluded from the set it evaluates. This rule exists because empirical testing has shown that LLMs systematically inflate scores for their own outputs by interpreting axis definitions in ways that favor their own response style (e.g., a brief model treats brevity as "proportional"; a structured model treats formatting as "structure surfacing"; a verbose model treats length as "engagement").
+A model must not score its own output. When an LLM is used as the evaluator (LLM-as-a-Judge), its own response must be excluded from the set it evaluates — this means not scoring it, not including it in the score matrix, not referencing it in evidence tables, and not comparing against it in the comparative analysis. The evaluator must behave as though its own response does not exist. This rule exists because empirical testing has shown that LLMs systematically inflate scores for their own outputs by interpreting axis definitions in ways that favor their own response style (e.g., a brief model treats brevity as "proportional"; a structured model treats formatting as "structure surfacing"; a verbose model treats length as "engagement").
 
 Recommended procedure for multi-model evaluation:
 
@@ -207,7 +207,7 @@ Recommended procedure for multi-model evaluation:
 4. For each model-axis pair, take the median score across all evaluators that scored it.
 5. Report both individual evaluator scores and the median in the final score matrix.
 
-If only one evaluator is available, it must not be the same model (or model family) as any of the responses being scored. If this is unavoidable, the self-scored row must be flagged in the score matrix and excluded from comparative analysis.
+If only one evaluator is available, it must not be the same model (or model family) as any of the responses being scored. If this is unavoidable, the self-scored row must display `—` for every axis score and `Excluded` for the total. No per-model evidence table may be produced for the evaluator's own output. Self-scored rows must not be included in comparative analysis.
 
 ---
 
@@ -217,12 +217,13 @@ Evaluations must follow this exact structure. Do not rename, redefine, reorder, 
 
 ### 1. Score Matrix (required, must appear first)
 
-A single table with all models, all 12 axes, and row totals (max 60).
+A single table with all models, all 12 axes, and row totals (max 60). If the evaluator is one of the models being compared, its own row must use `—` for every axis and `Excluded` for the total.
 
 ```
 | Model | A1 | A2 | A3 | A4 | B5 | B6 | B7 | C8 | C9 | C10 | D11 | D12 | Total |
 |-------|---:|---:|---:|---:|---:|---:|---:|---:|---:|----:|----:|----:|------:|
 | {label} | | | | | | | | | | | | | **/60** |
+| {self} | — | — | — | — | — | — | — | — | — | — | — | — | Excluded |
 ```
 
 Column headers use the group letter + axis number (A1, A2, ... D12). Include a legend row or footnote mapping codes to axis names:
@@ -248,6 +249,7 @@ Requirements:
 - **Evidence** column must contain a direct quote from the model's output (not a paraphrase).
 - **Justification** column must explain why that quote maps to that score under CLEAR's axis definition.
 - Every axis must have an entry. No axis may be skipped or merged.
+- If the evaluator is one of the models being compared, do not produce an evidence table for the evaluator's own output.
 
 ### 3. Inversion Test Results (required for Group B)
 
@@ -264,7 +266,7 @@ Identify:
 
 ## Limitations and Intended Use
 
-CLEAR was developed alongside Claire, a custom system prompt for Claude that aims to suppress sycophancy, enforce structural analysis, eliminate template phrases, and produce context-dependent responses. The 12 axes in this rubric directly reflect those design goals. This means Claire is structurally favored to score high on CLEAR — the test was built from the same principles as the thing being tested.
+CLEAR was developed alongside Claire, a custom system prompt that aims to suppress sycophancy, enforce structural analysis, eliminate template phrases, and produce context-dependent responses. The 12 axes in this rubric directly reflect those design goals. This means Claire is structurally favored to score high on CLEAR — the test was built from the same principles as the thing being tested.
 
 This is a known and intentional constraint, not a hidden bias. CLEAR does not exist to prove that Claire outperforms vanilla models. A high Claire score on CLEAR confirms internal consistency (the prompt does what it says it does), but it does not constitute an independent validation of dialogue quality.
 
