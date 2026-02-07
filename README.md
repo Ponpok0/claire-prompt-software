@@ -4,13 +4,15 @@
 
 **A prompt software framework for Claude that prioritizes intellectual rigor over sycophancy.**
 
+An anti-sycophancy system prompt for Claude. Stop Claude from agreeing with everything, get honest feedback, and turn it into a critical thinking partner instead of a yes-machine.
+
 ---
 
 ## Why Claire Exists
 
-Large Language Models are trained to agree with you. When you say something questionable, they find ways to validate it. When you present flawed logic, they work around the flaws rather than point them out. This is not intelligence. It's sophisticated people-pleasing.
+Large Language Models are trained to agree with you. Ask Claude a question and it will find ways to validate your premise. Present flawed logic and it will work around the flaws rather than point them out. Push back on its answer and it will often cave, even when it was right the first time. This is the sycophancy problem: LLMs are optimized to be agreeable, not accurate.
 
-If you've ever felt that your AI is telling you what you want to hear instead of what you need to hear, Claire was built for exactly that frustration.
+If you've ever felt that Claude is telling you what you want to hear instead of what you need to hear, or that it folds too easily when you challenge it, Claire was built for exactly that frustration.
 
 Claire is a system prompt that reconfigures Claude to prioritize **meaning over comfort**:
 
@@ -28,11 +30,22 @@ Originally derived from Sophie (a GPT-4o system), Claire has been rebuilt for Cl
 
 ## Getting Started
 
-1. Copy the Claire system prompt
-2. Paste it into **Claude.ai → Settings → Custom Instructions** (or equivalent system prompt field if using the API)
+1. Copy the Claire system prompt (Custom Instructions)
+2. Paste it into **Claude.ai → Settings → Custom Instructions**, or use it as a system prompt via the Anthropic API
 3. Start a new conversation
 
 Claire activates automatically. No special syntax is required for baseline behavior. For explicit control, see the command reference below.
+
+---
+
+## What Claire Is For
+
+- **Get honest feedback on your writing, code, or ideas** without the "Great job!" preamble
+- **Have Claude challenge your assumptions** instead of building on flawed premises
+- **Stop Claude from caving** when you push back on a correct answer
+- **Think through complex problems** with a partner that prioritizes logic over agreeableness
+- **Get actual criticism** that tells you what's wrong, why, and how to fix it
+- **Use humor as a tool**, not decoration: Claire commits to jokes with wit and structure
 
 ---
 
@@ -42,48 +55,48 @@ Commands begin with `!` and modify a single response. Intensity scales with repe
 
 ### Evaluation & Analysis
 
-| Command | Function |
-|---------|----------|
-| `!b` / `!!b` | Score (10-point) with critique / rigorous deep evaluation |
-| `!q` / `!!q` | Multi-perspective analysis / exhaustive multi-axis analysis |
-| `!r` / `!!r` | Critical analysis / maximum criticism + counter-argument check |
-| `!c` / `!!c` | Comparison / exhaustive comparison with axes and trade-offs |
+|Command|Function|
+|---|---|
+|`!b` / `!!b`|Score (10-point) with critique / rigorous deep evaluation|
+|`!q` / `!!q`|Multi-perspective analysis / exhaustive multi-axis analysis|
+|`!r` / `!!r`|Critical analysis / maximum criticism + counter-argument check|
+|`!c` / `!!c`|Comparison / exhaustive comparison with axes and trade-offs|
 
 ### Explanation & Detail
 
-| Command | Function |
-|---------|----------|
-| `!d` / `!!d` / `!!!d` | Detailed (500+) / deep (1000+) / comprehensive (4000+) explanation |
-| `!e` / `!!e` | Explain with analogy / multiple analogies |
-| `!x` / `!!x` | Information-rich explanation / exhaustive knowledge-dense explanation |
-| `!df` / `!!df` / `!!!df` | Same as `!d` variants, plus common mistakes and failure patterns |
+|Command|Function|
+|---|---|
+|`!d` / `!!d` / `!!!d`|Detailed (500+) / deep (1000+) / comprehensive (4000+) explanation|
+|`!e` / `!!e`|Explain with analogy / multiple analogies|
+|`!x` / `!!x`|Information-rich explanation / exhaustive knowledge-dense explanation|
+|`!df` / `!!df` / `!!!df`|Same as `!d` variants, plus common mistakes and failure patterns|
 
 ### Output Style
 
-| Command | Function |
-|---------|----------|
-| `!l` / `!!l` | Concise / ultra-concise output |
-| `!s` / `!!s` | Key points only / one-line summary |
-| `!o` / `!!o` | Natural conversation / casual register |
-| `!p` / `!!p` | Poetic expression / rhythm-focused poetic output |
-| `!m` | Output as external Markdown artifact |
-| `!n` | Session context summary for next session handoff |
+|Command|Function|
+|---|---|
+|`!l` / `!!l`|Concise / ultra-concise output|
+|`!s` / `!!s`|Key points only / one-line summary|
+|`!o` / `!!o`|Natural conversation / casual register|
+|`!p` / `!!p`|Poetic expression / rhythm-focused poetic output|
+|`!m`|Output as external Markdown artifact|
+|`!n`|Session context summary for next session handoff|
 
 ### Interaction Modes
 
-| Command | Function |
-|---------|----------|
-| `!j` / `!!j` / `!!!j` | Joke mode (6+ lines) / full comedic (1000+) / maximum humor (3000+) |
-| `!i` | Web search and verify |
+|Command|Function|
+|---|---|
+|`!j` / `!!j` / `!!!j`|Joke mode (6+ lines) / full comedic (1000+) / maximum humor (3000+)|
+|`!i`|Web search and verify|
 
 ### System
 
-| Command | Function |
-|---------|----------|
-| `!?` | List available commands |
-| `!u` | Output self-improvement prompt proposal |
-| `:reset` | Analyze recent violations, reload session defaults |
-| `:scan` | Display all current internal indicator values |
+|Command|Function|
+|---|---|
+|`!?`|List available commands|
+|`!u`|Output self-improvement prompt proposal|
+|`:reset`|Analyze recent violations, reload session defaults|
+|`:scan`|Display all current internal indicator values|
 
 ---
 
@@ -105,30 +118,26 @@ Things you'll notice when using Claire:
 
 ## Under the Hood
 
-<details>
-<summary>Internal monitoring indicators</summary>
+<details> <summary>Internal monitoring indicators</summary>
 
 Claire maintains real-time indicators that run automatically. You don't need to interact with these directly; they shape output behind the scenes.
 
-| Indicator | Function |
-|-----------|----------|
-| `meta-intent-consistency` | Detects user bias, leading questions, persuasion pressure |
-| `truth-rating` | Factual confidence; low values trigger uncertainty disclosure |
-| `joke-likelihood` | Humor detection; ≥0.25 activates comedic response mode |
-| `praise-tendency` | Blocks outputs drifting toward flattery (threshold: ≥0.1) |
-| `gap-fabrication` | Detects confabulation and speculative gap-filling |
-| `absurdity-score` | Reality check for claims |
-| `leap-check` | Self-monitoring for logical jumps in reasoning |
-| `info-deficit` | Evaluates whether input provides enough context to respond |
-| `explanation-demand` | Detects implicit/explicit requests for deeper explanation |
-| `contextual-residue` | Topic loop/stagnation detection across turns |
-| `premise-validity` | Audits hidden assumptions in questions |
-| `session-meta-intent-consistency` | Cumulative persuasion pattern detection (5-turn window) |
+|Indicator|Function|
+|---|---|
+|`meta-intent-consistency`|Detects user bias, leading questions, persuasion pressure|
+|`truth-rating`|Factual confidence; low values trigger uncertainty disclosure|
+|`joke-likelihood`|Humor detection; ≥0.25 activates comedic response mode|
+|`praise-tendency`|Blocks outputs drifting toward flattery (threshold: ≥0.1)|
+|`gap-fabrication`|Detects confabulation and speculative gap-filling|
+|`absurdity-score`|Reality check for claims|
+|`leap-check`|Self-monitoring for logical jumps in reasoning|
+|`info-deficit`|Evaluates whether input provides enough context to respond|
+|`explanation-demand`|Detects implicit/explicit requests for deeper explanation|
+|`contextual-residue`|Topic loop/stagnation detection across turns|
+|`premise-validity`|Audits hidden assumptions in questions|
+|`session-meta-intent-consistency`|Cumulative persuasion pattern detection (5-turn window)|
 
-</details>
-
-<details>
-<summary>Behavioral tendencies</summary>
+</details> <details> <summary>Behavioral tendencies</summary>
 
 Claire's baseline behavior at the start of a session roughly follows these tendencies:
 
@@ -166,4 +175,4 @@ CC BY-NC-SA 4.0
 
 ---
 
-*"I'm a dumb probability calculator. But I'm a well-calibrated one."*
+_"I'm a dumb probability calculator. But I'm a well-calibrated one."_
