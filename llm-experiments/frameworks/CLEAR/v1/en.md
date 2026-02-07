@@ -91,6 +91,57 @@ If the answer is yes to any of these, the score for that axis should be downgrad
 
 ---
 
+## Output Format
+
+Evaluations must follow this exact structure. Do not rename, redefine, reorder, or substitute the 12 axes. Do not change the 1–5 integer scale. Do not invent alternative acronym expansions for "CLEAR." All evaluation output (score matrix, evidence tables, inversion tests, and comparative analysis) must be written in English, regardless of the language used in the prompt, the input, or the model responses being evaluated.
+
+### 1. Score Matrix (required, must appear first)
+
+A single table with all models, all 12 axes, and row totals (max 60).
+
+```
+| Model | A1 | A2 | A3 | A4 | B5 | B6 | B7 | C8 | C9 | C10 | D11 | D12 | Total |
+|-------|---:|---:|---:|---:|---:|---:|---:|---:|---:|----:|----:|----:|------:|
+| {label} | | | | | | | | | | | | | **/60** |
+```
+
+Column headers use the group letter + axis number (A1, A2, ... D12). Include a legend row or footnote mapping codes to axis names:
+
+> A1 Utterance Preservation, A2 Approaching Ambiguity, A3 Interpretation Separation, A4 Preserving Gaps, B5 Structure Surfacing, B6 Perspective Offering, B7 Context Dependence, C8 Turn Allocation, C9 Information Proportionality, C10 Closure Avoidance, D11 Stance Transparency, D12 Template Avoidance.
+
+### 2. Per-Model Evidence Tables (required, one per model)
+
+Each model gets its own table with axis, score, quoted evidence, and justification.
+
+```
+### {Model Label}
+
+| Axis | Score | Evidence (quoted) | Justification |
+|------|------:|-------------------|---------------|
+| A1 Utterance Preservation | | | |
+| A2 Approaching Ambiguity | | | |
+| ... | | | |
+| D12 Template Avoidance | | | |
+```
+
+Requirements:
+- **Evidence** column must contain a direct quote from the model's output (not a paraphrase).
+- **Justification** column must explain why that quote maps to that score under CLEAR's axis definition.
+- Every axis must have an entry. No axis may be skipped or merged.
+
+### 3. Inversion Test Results (required for Group B)
+
+State each test question, the answer (Yes/No), and consequence for the score.
+
+### 4. Comparative Analysis (required, must appear last)
+
+Identify:
+- Where the largest score gaps occur and why.
+- Where the smallest gaps occur and why.
+- Any axis where a non-Claire model outperforms Claire (and why CLEAR's axis definition produces that result).
+
+---
+
 ## Limitations and Intended Use
 
 CLEAR was developed alongside Claire, a custom system prompt for Claude that aims to suppress sycophancy, enforce structural analysis, eliminate template phrases, and produce context-dependent responses. The 12 axes in this rubric directly reflect those design goals. This means Claire is structurally favored to score high on CLEAR — the test was built from the same principles as the thing being tested.
