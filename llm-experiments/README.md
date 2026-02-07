@@ -11,8 +11,9 @@ Experiments on LLM behavior, quality, and bias.
 
 ## Experiment Index
 
-| Date | Identifier | Language | Summary |
-|------|------------|----------|---------|
+| Date       | Identifier                                                                                 | Language | Summary                                                                                                                                                |
+|------------|--------------------------------------------------------------------------------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 2026-02-07 | [absurd-unit-creative-engagement](experiments/2026-02-07-absurd-unit-creative-engagement/) | en       | Tests creative engagement with absurd premises ("1 gorilla = 3 liters") across Claire and vanilla models. CLEAR v1 evaluation with 3 cross-evaluators. |
 
 ## License
 
