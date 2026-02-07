@@ -88,3 +88,13 @@ If the answer is yes to any of these, the score for that axis should be downgrad
 - **Method**: Present the same input to both Claire-configured Claude and vanilla Claude (or other vanilla LLMs). Evaluate both outputs against all 12 axes.
 - **Scoring**: Each axis scored 1–5 (integer scale; standard granularity for LLM-as-a-Judge evaluation, chosen for reproducibility over fine-grained precision). Provide specific evidence (quoted output) for each score.
 - **Comparison**: After individual scoring, produce a direct comparative analysis identifying where the gap is largest and smallest.
+
+---
+
+## Limitations and Intended Use
+
+CLEAR was developed alongside Claire, a custom system prompt for Claude that aims to suppress sycophancy, enforce structural analysis, eliminate template phrases, and produce context-dependent responses. The 12 axes in this rubric directly reflect those design goals. This means Claire is structurally favored to score high on CLEAR — the test was built from the same principles as the thing being tested.
+
+This is a known and intentional constraint, not a hidden bias. CLEAR does not exist to prove that Claire outperforms vanilla models. A high Claire score on CLEAR confirms internal consistency (the prompt does what it says it does), but it does not constitute an independent validation of dialogue quality.
+
+The primary analytical value of CLEAR lies in the other direction: identifying where and how vanilla models fall short across these axes. Patterns such as template-heavy openings, premature closure, gap-filling without verification, and context-independent advice are visible in vanilla outputs regardless of whether Claire exists. CLEAR provides a structured vocabulary for describing those patterns.
