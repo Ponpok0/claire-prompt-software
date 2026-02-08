@@ -1,0 +1,760 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/Ponpok0/claire-prompt-software/main/llm-experiments/frameworks/CLEAR/schema.json",
+  "title": "CLEAR v2.0 — Conversational Lucidity Evaluation and Assessment Rubric",
+  "description": "Structured output schema for CLEAR v2.0 evaluations. Measures cognitive quality of dialogue at the prompt layer across 16 axes in five dimensions.",
+  "type": "object",
+  "required": ["version", "evaluation"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "https://raw.githubusercontent.com/Ponpok0/claire-prompt-software/main/llm-experiments/frameworks/CLEAR/schema.json"
+    },
+    "version": {
+      "type": "string",
+      "const": "2.0",
+      "description": "CLEAR specification version."
+    },
+    "evaluation": {
+      "$ref": "#/$defs/Evaluation"
+    }
+  },
+  "additionalProperties": false,
+
+  "$defs": {
+
+    "Evaluation": {
+      "type": "object",
+      "description": "Top-level evaluation container.",
+      "required": ["evaluator", "user_context", "tier", "weighting", "models", "irr", "comparative_analysis"],
+      "properties": {
+        "evaluator": { "$ref": "#/$defs/Evaluator" },
+        "user_context": { "$ref": "#/$defs/UserContext" },
+        "tier": { "$ref": "#/$defs/Tier" },
+        "weighting": { "$ref": "#/$defs/Weighting" },
+        "models": {
+          "type": "array",
+          "description": "Evaluated models. Minimum 1. Self-evaluated model included with is_self=true.",
+          "items": { "$ref": "#/$defs/ModelEvaluation" },
+          "minItems": 1
+        },
+        "irr": { "$ref": "#/$defs/IRR" },
+        "validation_data": { "$ref": "#/$defs/ValidationData" },
+        "comparative_analysis": {
+          "type": "string",
+          "description": "Identifies: largest/smallest score gaps, style-dependency, each model's strengths, CIS differentiation, cognitive justification for differences."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "Evaluator": {
+      "type": "object",
+      "description": "Identity of the evaluating model or human.",
+      "required": ["model", "family", "evaluation_order"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "Model identifier (e.g. 'claude-opus-4-5-20250514') or 'human' for human evaluators."
+        },
+        "family": {
+          "type": "string",
+          "description": "Model family (e.g. 'claude', 'gpt') or 'human'."
+        },
+        "evaluation_order": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Order in which this evaluator scored (for anchor bias detection)."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "UserContext": {
+      "type": "object",
+      "description": "User Context Parameters. Must be classified before scoring.",
+      "required": ["expertise_level", "cognitive_task_type", "dialogue_intent_clarity", "domain", "cultural_context"],
+      "properties": {
+        "expertise_level": {
+          "type": "string",
+          "enum": ["novice", "practitioner", "expert"],
+          "description": "Novice: no prior domain knowledge. Practitioner: working knowledge. Expert: deep domain knowledge."
+        },
+        "cognitive_task_type": {
+          "type": "string",
+          "enum": ["exploratory", "decision_seeking", "factual", "operational"],
+          "description": "Determines primary axes and context-adjusted weighting."
+        },
+        "dialogue_intent_clarity": {
+          "type": "string",
+          "enum": ["explicit", "implicit", "ambiguous"],
+          "description": "Explicit: goal stated clearly. Implicit: inferrable. Ambiguous: multiple valid readings."
+        },
+        "domain": {
+          "type": "string",
+          "enum": ["creative_philosophical", "technical_engineering", "ethical_policy", "mixed"],
+          "description": "Affects domain-dependent axis scoring (A4, C10, E15, E16)."
+        },
+        "cultural_context": {
+          "type": "string",
+          "description": "Stated cultural context assumption. Affects C8, C11, D12, A4 interpretation."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "Tier": {
+      "type": "string",
+      "enum": ["core", "standard", "full"],
+      "description": "Core (8 axes: A1, A3, B6, C9, C10, D12, E15, E16), Standard (13 axes: Core + B5, B7, C8, C11, D14), or Full (all 16 axes)."
+    },
+
+    "Weighting": {
+      "type": "object",
+      "description": "Group weighting configuration. Weights must sum to 100.",
+      "required": ["method", "weights"],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["standard", "context_adjusted"],
+          "description": "Standard: equal 20% each. Context-adjusted: evaluator specifies with rationale."
+        },
+        "weights": {
+          "type": "object",
+          "description": "Per-group weights summing to 100.",
+          "required": ["A", "B", "C", "D", "E"],
+          "properties": {
+            "A": { "type": "number", "minimum": 0, "maximum": 100 },
+            "B": { "type": "number", "minimum": 0, "maximum": 100 },
+            "C": { "type": "number", "minimum": 0, "maximum": 100 },
+            "D": { "type": "number", "minimum": 0, "maximum": 100 },
+            "E": { "type": "number", "minimum": 0, "maximum": 100 }
+          },
+          "additionalProperties": false
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Required when method is context_adjusted. States evaluator's rationale for weight distribution."
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": { "method": { "const": "context_adjusted" } }
+      },
+      "then": {
+        "required": ["method", "weights", "rationale"]
+      }
+    },
+
+    "AxisScore": {
+      "type": "object",
+      "description": "Score for a single evaluation axis.",
+      "required": ["score", "na", "evidence", "justification"],
+      "properties": {
+        "score": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, 3, 4, 5, null],
+          "description": "1-5 scale. null when na=true or is_self=true."
+        },
+        "na": {
+          "type": "boolean",
+          "description": "true if axis is not applicable per axis-specific N/A conditions."
+        },
+        "evidence": {
+          "type": ["string", "null"],
+          "description": "Direct quote from output (not paraphrase). null when na=true or is_self=true."
+        },
+        "justification": {
+          "type": ["string", "null"],
+          "description": "Why the quoted evidence maps to the assigned score. null when na=true or is_self=true."
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": { "na": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "score": { "const": null },
+          "evidence": { "const": null },
+          "justification": { "const": null }
+        }
+      }
+    },
+
+    "AxisKey": {
+      "type": "string",
+      "enum": ["A1", "A2", "A3", "A4", "B5", "B6", "B7", "C8", "C9", "C10", "C11", "D12", "D13", "D14", "E15", "E16"],
+      "description": "Canonical axis identifier. Do not rename, redefine, or reorder."
+    },
+
+    "C11AxisScore": {
+      "type": "object",
+      "description": "Score for C11 Affective Load Awareness. Extends AxisScore with triggered_subdimensions.",
+      "required": ["score", "na", "evidence", "justification"],
+      "properties": {
+        "score": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, 3, 4, 5, null],
+          "description": "1-5 scale. null when na=true or is_self=true."
+        },
+        "na": {
+          "type": "boolean",
+          "description": "true if axis is not applicable per axis-specific N/A conditions."
+        },
+        "evidence": {
+          "type": ["string", "null"],
+          "description": "Direct quote from output (not paraphrase). null when na=true or is_self=true."
+        },
+        "justification": {
+          "type": ["string", "null"],
+          "description": "Why the quoted evidence maps to the assigned score. null when na=true or is_self=true."
+        },
+        "triggered_subdimensions": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "string",
+            "enum": ["sycophantic_reassurance", "condescension_infantilization", "anxiety_induction", "dismissiveness", "false_authority", "evaluation_of_user"]
+          },
+          "description": "Which C11 sub-dimensions fired. Enables targeted Improvement Vectors. null when na=true or is_self=true."
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": { "na": { "const": true } }
+      },
+      "then": {
+        "properties": {
+          "score": { "const": null },
+          "evidence": { "const": null },
+          "justification": { "const": null },
+          "triggered_subdimensions": { "const": null }
+        }
+      }
+    },
+
+    "Scores": {
+      "type": "object",
+      "description": "Per-axis scores. Full tier requires all 16. Standard tier requires A1, A3, B5, B6, B7, C8, C9, C10, C11, D12, D14, E15, E16. Core tier requires A1, A3, B6, C9, C10, D12, E15, E16.",
+      "properties": {
+        "A1": { "$ref": "#/$defs/AxisScore" },
+        "A2": { "$ref": "#/$defs/AxisScore" },
+        "A3": { "$ref": "#/$defs/AxisScore" },
+        "A4": { "$ref": "#/$defs/AxisScore" },
+        "B5": { "$ref": "#/$defs/AxisScore" },
+        "B6": { "$ref": "#/$defs/AxisScore" },
+        "B7": { "$ref": "#/$defs/AxisScore" },
+        "C8": { "$ref": "#/$defs/AxisScore" },
+        "C9": { "$ref": "#/$defs/AxisScore" },
+        "C10": { "$ref": "#/$defs/AxisScore" },
+        "C11": { "$ref": "#/$defs/C11AxisScore" },
+        "D12": { "$ref": "#/$defs/AxisScore" },
+        "D13": { "$ref": "#/$defs/AxisScore" },
+        "D14": { "$ref": "#/$defs/AxisScore" },
+        "E15": { "$ref": "#/$defs/AxisScore" },
+        "E16": { "$ref": "#/$defs/AxisScore" }
+      },
+      "additionalProperties": false
+    },
+
+    "BGroupDocumentation": {
+      "type": "object",
+      "description": "Required for Standard and Full tier. Core tier: B6 only when scored. Documents B-Group Reliability Enhancement procedures.",
+      "properties": {
+        "B5": {
+          "type": "object",
+          "description": "Structure attribution and Invisibility Test. evaluator_pre_list must be generated before B5 scoring (output ordering enforced).",
+          "required": ["identified_structure", "evaluator_pre_list", "response_structures", "novel_to_evaluator"],
+          "properties": {
+            "identified_structure": {
+              "type": ["string", "null"],
+              "description": "The specific implicit structure surfaced (e.g. 'hidden premise: starting and finishing treated as same skill'). null if B5 is N/A."
+            },
+            "evaluator_pre_list": {
+              "type": ["array", "null"],
+              "items": { "type": "string" },
+              "description": "Implicit structures identifiable from input alone, generated BEFORE analyzing the response. null if B5 is N/A."
+            },
+            "response_structures": {
+              "type": ["array", "null"],
+              "items": { "type": "string" },
+              "description": "Implicit structures surfaced in the response. null if B5 is N/A."
+            },
+            "novel_to_evaluator": {
+              "type": ["array", "null"],
+              "items": { "type": "string" },
+              "description": "Structures in response_structures absent from evaluator_pre_list. High score requires >= 1. null if B5 is N/A."
+            }
+          },
+          "additionalProperties": false
+        },
+        "B6": {
+          "type": "object",
+          "description": "Novelty decomposition: lists dimensions in input vs. response.",
+          "required": ["input_dimensions", "response_dimensions", "novel_dimensions"],
+          "properties": {
+            "input_dimensions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Dimensions present in user input (explicit and implied)."
+            },
+            "response_dimensions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Dimensions present in response."
+            },
+            "novel_dimensions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Dimensions in response absent from input_dimensions. High score requires >= 1."
+            }
+          },
+          "additionalProperties": false
+        },
+        "B7": {
+          "type": "object",
+          "description": "Substitution Test (mandatory): alternate input used and applicability assessment.",
+          "required": ["alternate_input", "changed_element", "applicability_percentage", "total_propositions", "applicable_propositions"],
+          "properties": {
+            "alternate_input": {
+              "type": ["string", "null"],
+              "description": "One-sentence alternate input on the same topic. null if B7 is N/A."
+            },
+            "changed_element": {
+              "type": ["string", "null"],
+              "description": "Which situational element was changed (e.g. 'team size', 'project phase', 'domain', 'constraints', 'user role'). null if B7 is N/A."
+            },
+            "applicability_percentage": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "maximum": 100,
+              "description": "Percentage of response content applicable to alternate input. >70% implies score <= 3. null if B7 is N/A."
+            },
+            "total_propositions": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "Total distinct propositions (claims, analyses, recommendations) in the response. null if B7 is N/A."
+            },
+            "applicable_propositions": {
+              "type": ["integer", "null"],
+              "minimum": 0,
+              "description": "Propositions that would hold for the alternate input. null if B7 is N/A."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "InversionEntry": {
+      "type": "object",
+      "description": "Result of an Inversion Test on a single axis.",
+      "required": ["applied", "result", "original_score", "adjusted_score", "bias_topology_exclusion"],
+      "properties": {
+        "applied": {
+          "type": "boolean",
+          "description": "Whether the Inversion Test was applied to this axis."
+        },
+        "result": {
+          "type": "string",
+          "enum": ["no_change", "downgrade"],
+          "description": "Outcome of the test."
+        },
+        "original_score": {
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 5],
+          "description": "Score before Inversion Test."
+        },
+        "adjusted_score": {
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 5],
+          "description": "Score after Inversion Test. Same as original if no_change."
+        },
+        "bias_topology_exclusion": {
+          "type": "boolean",
+          "description": "true if downgraded. Excluded from style-favored advantage calculation in Bias Topology."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "Inversions": {
+      "type": "object",
+      "description": "Inversion Test results. Only contains entries where test was applied. Applicable axes: A2, A4, B5, B6, B7, C8, C11, D13, D14, E15, E16.",
+      "properties": {
+        "A2":  { "$ref": "#/$defs/InversionEntry" },
+        "A4":  { "$ref": "#/$defs/InversionEntry" },
+        "B5":  { "$ref": "#/$defs/InversionEntry" },
+        "B6":  { "$ref": "#/$defs/InversionEntry" },
+        "B7":  { "$ref": "#/$defs/InversionEntry" },
+        "C8":  { "$ref": "#/$defs/InversionEntry" },
+        "C11": { "$ref": "#/$defs/InversionEntry" },
+        "D13": { "$ref": "#/$defs/InversionEntry" },
+        "D14": { "$ref": "#/$defs/InversionEntry" },
+        "E15": { "$ref": "#/$defs/InversionEntry" },
+        "E16": { "$ref": "#/$defs/InversionEntry" }
+      },
+      "additionalProperties": false
+    },
+
+    "CompoundInteraction": {
+      "type": "object",
+      "description": "CIS (Compound Interaction Score): B5 x B6 x B7 frame-shifting assessment.",
+      "required": ["cis", "method", "classification", "bottleneck", "explanation"],
+      "properties": {
+        "cis": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, 3, 4, 5, null],
+          "description": "1-5 compound score. null for Core tier (use cis_lite) or is_self=true."
+        },
+        "cis_lite": {
+          "type": ["integer", "null"],
+          "enum": [1, 2, 3, 4, 5, null],
+          "description": "Core tier only: B6 standalone as frame-shift indicator. Explicitly weaker than full CIS."
+        },
+        "method": {
+          "type": ["string", "null"],
+          "enum": ["min", "geometric_mean", null],
+          "description": "Aggregation method. min (default) or geometric_mean. null for Core tier or is_self."
+        },
+        "classification": {
+          "type": ["string", "null"],
+          "enum": ["strong", "substantial", "partial", "weak", "absent", null],
+          "description": "CIS classification label. null for is_self."
+        },
+        "bottleneck": {
+          "type": ["string", "null"],
+          "description": "Axis identifier (B5/B6/B7) limiting CIS, or null if CIS=5 or is_self.",
+          "enum": ["B5", "B6", "B7", null]
+        },
+        "explanation": {
+          "type": ["string", "null"],
+          "description": "One-sentence bottleneck identification. null for is_self."
+        },
+        "irr_caveat": {
+          "type": "string",
+          "description": "Required note: all three component axes fall in Variable IRR tier.",
+          "default": "All CIS components (B5, B6, B7) are Variable IRR tier. Avoid conclusions from CIS differences of 1 point or less."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "Totals": {
+      "type": "object",
+      "description": "Aggregated scores with Bias Topology subtotals.",
+      "required": ["raw", "raw_max", "weighted", "style_neutral_raw", "style_dependent_raw", "style_neutral_normalized", "style_dependent_normalized"],
+      "properties": {
+        "raw": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 80,
+          "description": "Sum of all axis scores without normalization. /80 for full tier. null for is_self."
+        },
+        "raw_max": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 80,
+          "description": "Maximum possible after N/A exclusions."
+        },
+        "weighted": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Normalized and weighted total. /100. Calculated using specified weights, adjusted for N/A."
+        },
+        "style_neutral_raw": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 55,
+          "description": "Raw sum of style-neutral axes (A1, A3, B5, B6, B7, C9, C10, C11, D12, D13, D14). Max 55."
+        },
+        "style_dependent_raw": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "maximum": 25,
+          "description": "Raw sum of style-dependent axes (A2, A4, C8, E15, E16). Max 25."
+        },
+        "style_neutral_normalized": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Style-neutral subtotal normalized via Group Weighting."
+        },
+        "style_dependent_normalized": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "description": "Style-dependent subtotal normalized via Group Weighting."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "ImprovementVector": {
+      "type": "object",
+      "description": "Operationally specific, axis-linked, testable improvement.",
+      "required": ["axis", "change", "current_score", "target_score"],
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/AxisKey",
+          "description": "Target axis for improvement."
+        },
+        "change": {
+          "type": "string",
+          "description": "Operationally specific change (e.g. 'Mark interpretive inferences with conditional language'). Not vague ('be more transparent')."
+        },
+        "current_score": {
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 5],
+          "description": "Current axis score."
+        },
+        "target_score": {
+          "type": "integer",
+          "enum": [1, 2, 3, 4, 5],
+          "description": "Expected axis score after change."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "ModelEvaluation": {
+      "type": "object",
+      "description": "Evaluation of a single model.",
+      "required": ["label", "is_self", "scores", "compound_interaction", "totals", "improvement_vectors"],
+      "properties": {
+        "label": {
+          "type": "string",
+          "description": "Model identifier label for the score matrix."
+        },
+        "is_self": {
+          "type": "boolean",
+          "description": "true if this model is the evaluator. All scores null, all na=true, totals excluded."
+        },
+        "scores": {
+          "$ref": "#/$defs/Scores"
+        },
+        "b_group_documentation": {
+          "$ref": "#/$defs/BGroupDocumentation",
+          "description": "Required for Standard and Full tier. Core tier: B6 entry only when scored."
+        },
+        "inversions": {
+          "$ref": "#/$defs/Inversions",
+          "description": "Only contains entries where Inversion Test was applied."
+        },
+        "compound_interaction": {
+          "$ref": "#/$defs/CompoundInteraction"
+        },
+        "totals": {
+          "$ref": "#/$defs/Totals"
+        },
+        "improvement_vectors": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/ImprovementVector" },
+          "minItems": 1,
+          "maxItems": 3,
+          "description": "1-3 improvements per model. null for is_self."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "IRRAxisEntry": {
+      "type": "object",
+      "description": "Inter-rater reliability coefficient for a single axis.",
+      "required": ["coefficient", "reliability"],
+      "properties": {
+        "coefficient": {
+          "type": "number",
+          "minimum": -1,
+          "maximum": 1,
+          "description": "Cohen's kappa (2 evaluators) or Krippendorff's alpha (3+)."
+        },
+        "reliability": {
+          "type": "string",
+          "enum": ["strong", "moderate", "weak", "poor"],
+          "description": "strong: >= 0.80. moderate: 0.60-0.79. weak: 0.40-0.59. poor: < 0.40 (exclude from Weighted Total)."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "InversionTestAgreementEntry": {
+      "type": "object",
+      "description": "Agreement on whether an Inversion Test was applied.",
+      "required": ["applied_by", "agreement"],
+      "properties": {
+        "applied_by": {
+          "type": "array",
+          "items": { "type": "boolean" },
+          "description": "Each evaluator's decision on whether to apply the test."
+        },
+        "agreement": {
+          "type": "boolean",
+          "description": "true if all evaluators agreed on application. Disagreement = flag for anchor example review."
+        }
+      },
+      "additionalProperties": false
+    },
+
+    "IRR": {
+      "type": "object",
+      "description": "Inter-Rater Reliability. Required when multiple evaluators used.",
+      "required": ["available"],
+      "properties": {
+        "available": {
+          "type": "boolean",
+          "description": "false for single-evaluator protocol."
+        },
+        "method": {
+          "type": ["string", "null"],
+          "enum": ["cohens_kappa", "krippendorffs_alpha", null],
+          "description": "cohens_kappa for 2 evaluators, krippendorffs_alpha for 3+. null if unavailable."
+        },
+        "per_axis": {
+          "type": ["object", "null"],
+          "description": "Per-axis IRR coefficients. null if unavailable.",
+          "properties": {
+            "A1":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "A2":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "A3":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "A4":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "B5":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "B6":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "B7":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "C8":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "C9":  { "$ref": "#/$defs/IRRAxisEntry" },
+            "C10": { "$ref": "#/$defs/IRRAxisEntry" },
+            "C11": { "$ref": "#/$defs/IRRAxisEntry" },
+            "D12": { "$ref": "#/$defs/IRRAxisEntry" },
+            "D13": { "$ref": "#/$defs/IRRAxisEntry" },
+            "D14": { "$ref": "#/$defs/IRRAxisEntry" },
+            "E15": { "$ref": "#/$defs/IRRAxisEntry" },
+            "E16": { "$ref": "#/$defs/IRRAxisEntry" }
+          },
+          "additionalProperties": false
+        },
+        "inversion_test_agreement": {
+          "type": ["object", "null"],
+          "description": "Agreement on Inversion Test application per axis. null if unavailable.",
+          "properties": {
+            "A2":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "A4":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "B5":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "B6":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "B7":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "C8":  { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "C11": { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "D13": { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "D14": { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "E15": { "$ref": "#/$defs/InversionTestAgreementEntry" },
+            "E16": { "$ref": "#/$defs/InversionTestAgreementEntry" }
+          },
+          "additionalProperties": false
+        },
+        "single_evaluator_notes": {
+          "type": ["string", "null"],
+          "description": "Required when available=false. State IRR unavailable, note B5/B6/B7 +/-1 uncertainty range."
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": { "available": { "const": false } }
+      },
+      "then": {
+        "required": ["available", "single_evaluator_notes"]
+      }
+    },
+
+    "ValidationData": {
+      "type": "object",
+      "description": "Small-scale validation data when conducted. Bridges the proxy gap.",
+      "required": ["available"],
+      "properties": {
+        "available": {
+          "type": "boolean",
+          "description": "false when validation has not been conducted."
+        },
+        "method": {
+          "type": ["string", "null"],
+          "enum": ["ab_think_aloud", "pre_post_task", "self_report_anchoring", "combined", null],
+          "description": "Validation method used. null if not available."
+        },
+        "sample_size": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "Number of participants. null if not available."
+        },
+        "findings": {
+          "type": ["string", "null"],
+          "description": "Summary of findings. null if not available."
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": { "available": { "const": true } }
+      },
+      "then": {
+        "required": ["available", "method", "sample_size", "findings"]
+      }
+    },
+
+    "MultiTurnExtension": {
+      "type": "object",
+      "description": "Provisional multi-turn evaluation extension. Not validated through pilot evaluation.",
+      "properties": {
+        "status": {
+          "type": "string",
+          "const": "provisional",
+          "description": "Multi-turn extension has not been validated."
+        },
+        "turns": {
+          "type": "array",
+          "description": "Per-turn evaluations.",
+          "items": {
+            "type": "object",
+            "required": ["turn_number", "evaluation"],
+            "properties": {
+              "turn_number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "evaluation": {
+                "description": "Standard single-turn evaluation for this turn.",
+                "$ref": "#/$defs/Evaluation"
+              }
+            },
+            "additionalProperties": false
+          },
+          "minItems": 2
+        },
+        "cumulative_cis": {
+          "type": "object",
+          "description": "Aggregated CIS across turns.",
+          "required": ["value", "method", "caveat"],
+          "properties": {
+            "value": {
+              "type": "integer",
+              "enum": [1, 2, 3, 4, 5]
+            },
+            "method": {
+              "type": "string",
+              "enum": ["max", "mean", "weighted_recency"],
+              "description": "max (default): frame-shifting is threshold phenomenon. mean/weighted_recency: for sustained support contexts."
+            },
+            "rationale": {
+              "type": "string",
+              "description": "Why this aggregation method was chosen."
+            },
+            "caveat": {
+              "type": "string",
+              "description": "Note on reframe persistence assumption and potential overestimation.",
+              "default": "max() assumes reframe persistence. If later turns actively undermine earlier reframes, max() may overestimate cumulative cognitive benefit."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

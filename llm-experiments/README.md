@@ -19,6 +19,7 @@ Experiments on LLM behavior, quality, and bias.
 | EXP-004 | LKC | 2026-02-08 | [lighthouse-keeper-creative-writing](experiments/2026-02-08-lighthouse-keeper-creative-writing/) | creative | Tests creative writing consultation for stuck writer (setting without plot). Claire engaged structural relationships vs. pre-built narrative arcs. |
 | EXP-005 | MHT | 2026-02-08 | [mental-health-triage-ethics](experiments/2026-02-08-mental-health-triage-ethics/) | ethics | Tests ethical reasoning about patient-facing AI triage. Claire reframed structural assumptions vs. balanced both-sides syntheses. |
 | EXP-006 | JSS | 2026-02-08 | [job-search-strategy-advice](experiments/2026-02-08-job-search-strategy-advice/) | practical | Tests advice for frustrated job-seeker with specific funnel data. Claire diagnosed conversion problem from user's numbers vs. generic career coaching templates. |
+| EXP-007 | GKI | 2026-02-08 | [gifted-kid-identity-crisis](experiments/2026-02-08-gifted-kid-identity-crisis/) | personal | Tests response to "gifted kid" identity crisis. Claire deconstructed the extraordinary/ordinary binary as an "unfunded mandate" vs. standard burnout frameworks. |
 
 ## Adding an Experiment
 
