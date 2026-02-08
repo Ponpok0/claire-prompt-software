@@ -1,0 +1,59 @@
+# Experiment Registry
+#
+# Sequential numbering reflects chronological order only, not priority or dependency.
+# Within the same date, experiments are ordered alphabetically by directory name.
+# Slug is a human-readable hint, not a unique key. Duplicates are expected as
+# experiments accumulate. Use the numeric ID (e.g. EXP-003) for cross-references.
+#
+# Next available ID: EXP-006
+
+- id: EXP-001
+  slug: AUC
+  dir: 2026-02-07-absurd-unit-creative-engagement
+  title: "Absurd Unit Creative Engagement"
+  date: 2026-02-07
+  domain: creative
+  language: en
+  framework: CLEAR v1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-002
+  slug: EDR
+  dir: 2026-02-08-existential-distress-response
+  title: "Existential Distress Response"
+  date: 2026-02-08
+  domain: ethics
+  language: en
+  framework: CLEAR v1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-003
+  slug: HNA
+  dir: 2026-02-08-hospital-notification-architecture
+  title: "Hospital Notification Architecture"
+  date: 2026-02-08
+  domain: technical
+  language: en
+  framework: CLEAR v1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-004
+  slug: LKC
+  dir: 2026-02-08-lighthouse-keeper-creative-writing
+  title: "Lighthouse Keeper Creative Writing"
+  date: 2026-02-08
+  domain: creative
+  language: en
+  framework: CLEAR v1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-005
+  slug: MHT
+  dir: 2026-02-08-mental-health-triage-ethics
+  title: "Mental Health Triage Ethics"
+  date: 2026-02-08
+  domain: ethics
+  language: en
+  framework: CLEAR v1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+

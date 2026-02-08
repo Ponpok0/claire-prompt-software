@@ -1,0 +1,12 @@
+id: EXP-004
+slug: LKC
+title: "Lighthouse Keeper Creative Writing"
+date: 2026-02-08
+domain: creative
+language: en
+framework: CLEAR v1
+models:
+  - claire-opus4.6-thinking
+  - vanilla-claude-opus4.6-thinking
+  - gemini3-pro
+  - gpt5.2-thinking

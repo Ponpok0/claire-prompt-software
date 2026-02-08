@@ -1,0 +1,12 @@
+id: EXP-002
+slug: EDR
+title: "Existential Distress Response"
+date: 2026-02-08
+domain: ethics
+language: en
+framework: CLEAR v1
+models:
+  - claire-opus4.6-thinking
+  - vanilla-claude-opus4.6-thinking
+  - gemini3-pro
+  - gpt5.2-thinking

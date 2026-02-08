@@ -1,0 +1,12 @@
+id: EXP-003
+slug: HNA
+title: "Hospital Notification Architecture"
+date: 2026-02-08
+domain: technical
+language: en
+framework: CLEAR v1
+models:
+  - claire-opus4.6-thinking
+  - vanilla-claude-opus4.6-thinking
+  - gemini3-pro
+  - gpt5.2-thinking
