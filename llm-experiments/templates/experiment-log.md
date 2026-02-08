@@ -6,7 +6,7 @@
 - Language: en
 - Claire version: opus4.6-thinking
 - Hypothesis: 
-- Evaluation framework: CLEAR v1.1
+- Evaluation framework: CLEAR v2.0
 
 ## Prompt
 
