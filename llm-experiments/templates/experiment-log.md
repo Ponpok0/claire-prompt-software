@@ -29,6 +29,8 @@
 
 ## Evaluations (required)
 
+<!-- Each eval tag = evaluation BY that model. The evaluator must exclude itself from scoring. -->
+
 <eval:vanilla-claude-opus4.6-thinking>
 </eval:vanilla-claude-opus4.6-thinking>
 
