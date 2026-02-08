@@ -10,11 +10,11 @@ This repository records comparison experiments between Claire (a custom-prompted
 
 ## Step-by-Step Procedure
 
-1. **Validate required data.** If any of the following are missing or empty, print an error message listing the missing items and **stop without creating any files**:
-   - Date
-   - Prompt
-   - At least one response
-   - At least one evaluation
+1. **Validate required data.** Check the template tags. If any of the following are empty (no content between open/close tags), print an error listing the empty tags and **stop without creating any files**:
+   - Date (in Experiment section)
+   - `<prompt>` tag
+   - At least one `<response:*>` tag
+   - At least one `<eval:*>` tag
 2. **Read `experiments/registry.yaml`** to determine the next available `EXP-NNN` ID.
 3. **Derive identifiers from the experiment data:**
    - Directory name: `YYYY-MM-DD-{descriptive-identifier}` (derive from content if not specified)
@@ -27,6 +27,18 @@ This repository records comparison experiments between Claire (a custom-prompted
 7. **Update root `README.md`** experiment index table.
 8. **Revert the template.** Run: `git checkout -- templates/experiment-log.md`
 
+## Tag-to-File Mapping
+
+The experiment log template uses XML-style tags. **Copy tag contents directly to files. Do not rewrite, restructure, or summarize the content.** Only add YAML front matter.
+
+| Tag pattern | Output file | Front matter |
+|-------------|-------------|--------------|
+| `<prompt>` | `data-{lang}/inputs/prompt.md` | None. Write `# Prompt` header + content as-is. |
+| `<response:{label}>` | `data-{lang}/responses/{label}.md` | Add model/label/date/language fields. |
+| `<eval:{label}>` | `data-{lang}/evaluations/{label}-eval.md` | Add evaluator/model/date/framework fields. |
+
+Empty tags (no content between open and close) = missing data. See validation step.
+
 ## File Placement
 
 ```
@@ -35,14 +47,16 @@ experiments/{dir-name}/
 ├── README.md              # Experiment summary (see format below)
 ├── design.md              # Experiment design (see format below)
 ├── data-{lang}/
-│   ├── inputs/prompt.md   # The input prompt
-│   ├── responses/         # One file per model: {label}.md
-│   └── evaluations/       # One file per evaluator: {evaluator}-eval.md
+│   ├── inputs/prompt.md   # From <prompt> tag
+│   ├── responses/         # From <response:*> tags
+│   └── evaluations/       # From <eval:*> tags
 ├── analysis/findings.md   # Cross-evaluator synthesis
 └── outputs/               # Published artifacts, if any
 ```
 
 ## File Formatting Rules
+
+**Critical: Response and evaluation file bodies must be copied verbatim from the template tags. Do not paraphrase, restructure, reformat, or re-generate any content. Only prepend YAML front matter.**
 
 ### Response files (`data-{lang}/responses/{label}.md`)
 
@@ -170,7 +184,8 @@ models:
 
 ## Notes
 
-- Preserve raw experiment data as-is. Formatting cleanup is fine; content alteration is not.
+- **Do not re-generate or restructure response/evaluation content.** Copy verbatim from tags; only add front matter.
+- Preserve raw experiment data as-is. Formatting cleanup (e.g. trailing whitespace) is fine; content alteration is not.
 - When the user omits a hypothesis, derive one from the prompt and response patterns.
-- When evaluation data is not provided, **do not generate evaluations**. Print an error and stop. The user must provide evaluation data from external evaluators.
+- When evaluation data is not provided, **do not generate evaluations**. Print an error and stop.
 - The `{model name}` placeholder in prompts should be replaced with each model's public-facing name (Claire, Claude, Gemini, ChatGPT, etc.) as appropriate.

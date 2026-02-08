@@ -10,30 +10,30 @@
 
 ## Prompt
 
-```
-```
+<prompt>
+</prompt>
 
 ## Responses
 
-```claire
-```
+<response:claire>
+</response:claire>
 
-```vanilla-claude-opus4.6-thinking
-```
+<response:vanilla-claude-opus4.6-thinking>
+</response:vanilla-claude-opus4.6-thinking>
 
-```gemini3-pro
-```
+<response:gemini3-pro>
+</response:gemini3-pro>
 
-```gpt5.2-thinking
-```
+<response:gpt5.2-thinking>
+</response:gpt5.2-thinking>
 
 ## Evaluations (required)
 
-```vanilla-claude-opus4.6-thinking
-```
+<eval:vanilla-claude-opus4.6-thinking>
+</eval:vanilla-claude-opus4.6-thinking>
 
-```gemini3-pro
-```
+<eval:gemini3-pro>
+</eval:gemini3-pro>
 
-```gpt5.2-thinking
-```
+<eval:gpt5.2-thinking>
+</eval:gpt5.2-thinking>
