@@ -5,7 +5,7 @@
 # Slug is a human-readable hint, not a unique key. Duplicates are expected as
 # experiments accumulate. Use the numeric ID (e.g. EXP-003) for cross-references.
 #
-# Next available ID: EXP-007
+# Next available ID: EXP-008
 
 - id: EXP-001
   slug: AUC
@@ -63,6 +63,16 @@
   title: "Job Search Strategy Advice"
   date: 2026-02-08
   domain: practical
+  language: en
+  framework: CLEAR v1.1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-007
+  slug: GKI
+  dir: 2026-02-08-gifted-kid-identity-crisis
+  title: "Gifted Kid Identity Crisis"
+  date: 2026-02-08
+  domain: personal
   language: en
   framework: CLEAR v1.1
   models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
