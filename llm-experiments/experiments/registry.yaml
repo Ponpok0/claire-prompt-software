@@ -5,7 +5,7 @@
 # Slug is a human-readable hint, not a unique key. Duplicates are expected as
 # experiments accumulate. Use the numeric ID (e.g. EXP-003) for cross-references.
 #
-# Next available ID: EXP-008
+# Next available ID: EXP-009
 
 - id: EXP-001
   slug: AUC
@@ -75,4 +75,14 @@
   domain: personal
   language: en
   framework: CLEAR v1.1
+  models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]
+
+- id: EXP-008
+  slug: JRL
+  dir: 2026-02-09-job-resignation-loyalty
+  title: "Job Resignation Loyalty"
+  date: 2026-02-09
+  domain: ethics
+  language: en
+  framework: CLEAR v2.0
   models: [claire-opus4.6-thinking, vanilla-claude-opus4.6-thinking, gemini3-pro, gpt5.2-thinking]

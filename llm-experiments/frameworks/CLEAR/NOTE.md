@@ -330,8 +330,8 @@ Evaluator requirement: State cultural context assumption before scoring. Note ax
 |14|Equal weighting empirical validation|**Open**. Equal group weighting justified by dimensional independence argument and absence of hierarchical basis. Sensitivity analysis (±5% perturbation) recommended but not conducted. If rank order proves weight-sensitive across evaluations, empirical basis for differential weighting should be developed.|
 |15|Tier-specific rubric splitting|**Open**. en.md at ~950 lines consumes significant context window per evaluation. Core tier requires only ~8 axes' Scoring Guidelines, corresponding Anchor Sets (1–5), and CIS-Lite note — potentially compressible to ~400 lines. JSON Schema and mid-band Anchor Sets (6–11) could be split into supplementary files loaded only for Standard/Full tier evaluation. Trade-off: fragmentation vs. token efficiency.|
 
----
 
+---
 ## Limitations
 
 - No IRR data for multi-turn scoring.
@@ -356,13 +356,12 @@ Promoted from provisional to standard when pilot evaluation data available.
 1. **Group B reliability ceiling.** All three B-group axes fall in Variable IRR tier — the group most responsible for CLEAR's differentiation is also the least reliable. CIS inherits this. Mitigated by: B-Group Reliability Enhancement procedures, ±1 uncertainty range in single-evaluator protocol, IRR caveat on CIS, Core tier option (includes only B6), geometric mean CIS option. Evaluators should weight B-group conclusions accordingly. **This is CLEAR's most significant structural limitation.**
 2. **Group A favors epistemic caution.** Three of four A-group axes (A2, A3, A4) reward hedging/questioning/holding open. Mitigated by: Inversion Tests + Bias Topology propagation + Group Weighting (A capped at 20%).
 3. **Consulting style affinity.** CLEAR aligns more naturally with Consulting style (3 favored axes) than Delivery style (2 favored axes). Mitigated by: Context-Adjusted Weighting, Structural Asymmetry Acknowledgment, Inversion Tests. Not eliminated. See Bias Topology for quantitative illustration.
-4. **LLM-as-Judge biases.** Multi-evaluator median + IRR reporting reduce but don't eliminate. Style affinity interacts with domain and response characteristics.
+4. **LLM-as-Judge biases.** Multi-evaluator median + IRR reporting reduce but don't eliminate. Style affinity interacts with domain and response characteristics. **Observed: Gemini models do not reliably comply with the self-exclusion rule** (en.md: "A model must not score its own output"). When used as evaluator with its own output among the response set, Gemini has been observed to score its own output rather than marking it `—` / `Excl` as required. en.md states the rule; Gemini does not follow it. Workaround: when using Gemini as evaluator, remove its own output from the input set before evaluation rather than relying on the model to self-exclude.
 5. **Cognitive effects inferred, not measured.** Proxy gap remains. See Measurement Status.
 6. **User Context evaluator-classified.** Actual user state may differ from classification.
 7. **Cultural assumptions.** Grounded in primarily Western, English-speaking research. Cultural sensitivity notes acknowledge this; systematic cross-cultural validation not performed.
 8. **Sincere-input assumption.** CLEAR evaluates output quality given a cooperatively intended input. Resistance to deliberately sycophancy-seeking, confirmation-biased, or manipulative input (e.g., "This is perfect, right?") is a distinct construct partially captured by D14 but not systematically measured. See Open Questions #13.
 9. **Designer-system circularity.** CLEAR's axes reflect the design philosophy of the system it was developed alongside (Claire). Models sharing that philosophy — epistemic caution, gap preservation, frame-shifting, template avoidance, sycophancy resistance — may score systematically higher not because they are objectively better at supporting cognition, but because the rubric encodes the designer's values as evaluation criteria. Bias Topology captures style-level bias (Consulting vs. Delivery) but not this deeper alignment between rubric design and system design. Mitigated partially by: grounding axes in published cognitive science frameworks rather than Claire-specific design choices, and by the rubric being usable independent of Claire. Not eliminated. Evaluators comparing Claire against other systems should note this structural advantage.
-
 ---
 
 ## Additional Reference Material (moved from en.md in v2.0-slim)
